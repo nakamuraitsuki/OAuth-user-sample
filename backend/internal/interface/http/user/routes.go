@@ -7,7 +7,7 @@ import (
 
 func RegisterRoutes(g *echo.Group, h *Handler) {
 	g.GET("/callback", h.Callback)
-	g.GET("/users/login", h.Login)
+	g.POST("/users/login", h.Login)
 	g.POST("/users/logout", h.Logout)
 
 	auth := g.Group("/users")

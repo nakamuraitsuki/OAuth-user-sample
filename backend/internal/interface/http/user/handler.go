@@ -7,12 +7,14 @@ import (
 
 type Handler struct {
 	oidcConfig *oidc.OIDCConfig
-	usecase user_usecase.UserUseCaseInterface
+	verifier   *oidc.IDTokenVerifier
+	usecase    user_usecase.UserUseCaseInterface
 }
 
-func NewHandler(oidcConfig *oidc.OIDCConfig, usecase user_usecase.UserUseCaseInterface) *Handler {
+func NewHandler(oidcConfig *oidc.OIDCConfig, verifier *oidc.IDTokenVerifier, usecase user_usecase.UserUseCaseInterface) *Handler {
 	return &Handler{
 		oidcConfig: oidcConfig,
-		usecase: usecase,
+		verifier:   verifier,
+		usecase:    usecase,
 	}
 }
