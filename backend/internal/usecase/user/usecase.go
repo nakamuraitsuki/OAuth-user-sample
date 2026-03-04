@@ -8,7 +8,7 @@ import (
 )
 
 type UserUseCaseInterface interface {
-	Register(ctx context.Context, name string) (*RegisterResult, error)
+	Register(ctx context.Context, idStr string, name string) (*RegisterResult, error)
 	GetMe(ctx context.Context, id uuid.UUID) (*GetMeResult, error)
 	UpdateProfile(ctx context.Context, id uuid.UUID, name string, bio string) error
 	UpdateIcon(ctx context.Context, id uuid.UUID, data []byte) error

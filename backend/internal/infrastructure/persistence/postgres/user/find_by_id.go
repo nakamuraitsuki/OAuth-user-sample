@@ -26,7 +26,7 @@ WHERE id = $1
 	err := db.GetContext(ctx, &model, query, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, fmt.Errorf("failed to find user by id: %w", err)
+			return nil, nil
 		}
 		return nil, fmt.Errorf("failed to find user by id: %w", err)
 	}

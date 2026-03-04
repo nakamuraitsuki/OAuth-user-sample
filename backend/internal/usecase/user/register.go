@@ -19,11 +19,31 @@ type RegisterResult struct {
 
 func (uc *UserUseCase) Register(
 	ctx context.Context,
+	idStr string,
 	name string,
 ) (*RegisterResult, error) {
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		return nil, err
+	}
+
+	// べき等性を保つ
+	exist, err := uc.repo.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if exist != nil {
+		return &RegisterResult{
+			ID:      exist.ID(),
+			Name:    exist.Name(),
+			Bio:     exist.Bio(),
+			IconKey: exist.IconKey(),
+			Role:    string(exist.Role()),
+		}, nil
+	}
 
 	user := user.NewUser(
-		uuid.New(),
+		id,
 		name,
 		"",
 		nil,
