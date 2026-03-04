@@ -15,7 +15,7 @@ func RegisterRoutes(g *echo.Group, mh *manager.VideoManagementHandler, vh *viewe
 	g.GET("/videos/:id/stream/*", vh.GetVideoStream) // 比較用
 
 	videos := g.Group("/videos")
-	videos.Use(middleware.DummyAuthMiddleware) // Dummyの認証ミドルウェアを使用
+	videos.Use(middleware.AuthMiddleware) // Dummyの認証ミドルウェアを使用
 
 	videos.POST("", mh.Create)
 	videos.GET("/mine", mh.ListMine)

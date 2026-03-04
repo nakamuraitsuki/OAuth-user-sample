@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"example.com/m/internal/interface/http/middleware"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -58,7 +59,7 @@ func (h *Handler) Callback(c echo.Context) error {
 	}
 
 	// ログイン情報を署名クッキーに焼く
-	sess, _ := session.Get("session", c)
+	sess, _ := session.Get(middleware.SessionName, c)
 	sess.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   86400,
@@ -67,7 +68,7 @@ func (h *Handler) Callback(c echo.Context) error {
 		SameSite: http.SameSiteLaxMode,
 	}
 	// ここで DB のユーザーIDをセット
-	sess.Values["user_id"] = result.ID.String()
+	sess.Values[middleware.UserIDKey] = result.ID.String()
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
 		return err
 	}
