@@ -7,16 +7,15 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   // 現在はDummyなので、ログイン処理をしてすぐにリダイレクトする
   useEffect(() => {
-    if (session.status === "authenticated") {
-      // 既にユーザー情報があるなら、トップへ飛ばして終了
-      navigate("/");
+    // すでに認証済み、または今まさにリクエスト中なら何もしない
+    if (session.status === "authenticated" || session.status === "loading") {
+      if (session.status === "authenticated") navigate("/");
       return;
     }
 
-    // まだならログインを実行
-    console.log("Logging in...");
-    login("", "");
-  }, [session, login, navigate]);
+    // 完全に 'unauthenticated' の時だけ、一度だけ実行する
+    login();
+  }, [session.status]);
 
   return <div>Logging in...</div>;
 };

@@ -19,6 +19,12 @@ export class AuthRepositoryImpl implements IAuthRepository {
     }
   }
 
+  async loginOIDC(): Promise<Result<User, AuthError>> {
+    window.location.href = "/api/users/login";
+
+    return new Promise(() => {() => {}}); // OIDCのリダイレクトでページ遷移するため、Promiseは完了しない
+  }
+
   async logout(): Promise<void> {
     await apiClient.post("/api/users/logout");
   }

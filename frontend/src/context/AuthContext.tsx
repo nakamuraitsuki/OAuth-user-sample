@@ -7,7 +7,7 @@ import { useServices } from "./ServiceContext";
 // NOTE: AuthContextType には、Sessionと更新メソッドをカプセル化
 interface AuthContextType {
   session: AuthSession;
-  login: (email: string, password: string) => Promise<Result<AuthSession, AuthError>>;
+  login: () => Promise<Result<AuthSession, AuthError>>;
   logout: () => Promise<void>;
 }
 
@@ -34,10 +34,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     initAuth();
   }, [authRepo]);
 
-  const login = async (name: string, password: string): Promise<Result<AuthSession, AuthError>> => {
+  const login = async (): Promise<Result<AuthSession, AuthError>> => {
     setSession({ status: 'loading', user: null });
 
-    const result = await authRepo.login(name, password);
+    const result = await authRepo.loginOIDC();
 
     if (result.success) {
       const sessionData: AuthSession = result.data

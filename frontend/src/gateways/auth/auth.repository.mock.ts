@@ -25,6 +25,22 @@ export class AuthRepositoryMock implements IAuthRepository {
     localStorage.removeItem("user_id");
   }
 
+  async loginOIDC(): Promise<Result<User, AuthError>> {
+    // OIDCのリダイレクトは実際には行わないが、成功したと仮定してユーザーデータを返す
+    try {
+      const user: User = {
+        id: "1",
+        name: "Locak Mock User",
+        bio: "This is a mock user for testing purposes.",
+        role: "user",
+      };
+      localStorage.setItem("user_id", user.id);
+      return success(user);
+    } catch (error) {
+      return failure("UNKNOWN_ERROR");
+    }
+  }
+
   async fetchCurrentSession(): Promise<AuthSession> {
     const userId = localStorage.getItem("user_id");
     if (userId) {

@@ -4,7 +4,7 @@ import type { AuthSession } from "./auth.model";
 
 export interface IAuthRepository {
   login(email: string, password: string): Promise<Result<User, AuthError>>; // ID/PW 用
-  // OAuth 用の login メソッドも必要に応じて追加
+  loginOIDC(): Promise<Result<User, AuthError>>; // OIDC 用
   logout(): Promise<void>;
   fetchCurrentSession(): Promise<AuthSession>;
 }
