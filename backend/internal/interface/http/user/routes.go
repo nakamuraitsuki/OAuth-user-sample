@@ -6,7 +6,8 @@ import (
 )
 
 func RegisterRoutes(g *echo.Group, h *Handler) {
-	g.POST("/users/login", h.DummyLogin) // 認証不要な仮ログインエンドポイント
+	g.GET("/callback", h.Callback)
+	g.GET("/users/login", h.Login)
 	g.POST("/users/logout", h.Logout)
 
 	auth := g.Group("/users")
