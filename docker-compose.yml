@@ -19,6 +19,7 @@ services:
       - ./backend/.env
     networks:
       - internal
+      - auth-common
     restart: unless-stopped
 
   backend-worker:
@@ -146,7 +147,9 @@ services:
 networks:
   internal:
     driver: bridge
-
+  auth-common:
+    external: true
+    name: auth-common-net
 volumes:
   pgdata:
   minio-data:
