@@ -14,25 +14,12 @@ services:
         condition: service_completed_successfully
     cap_add:
       - NET_ADMIN
-    deploy:
-      resources:
-      # NOTE: 演習のための極限的な制限
-      # 実際の運用では適切な分量を与えるべき
-        limits:
-          cpus: 0.01
-          memory: 128M
     container_name: http-backend
     env_file:
       - ./backend/.env
     networks:
       - internal
     restart: unless-stopped
-    # NOTE: 帯域リソースを現実的なラインに絞る
-    entrypoint: >
-      /bin/sh -c "
-      tc qdisc add dev eth0 root tbf rate 100mbit burst 15kb latency 50ms && 
-      ./app-http
-      "
 
   backend-worker:
     build:
@@ -76,11 +63,6 @@ services:
     restart: unless-stopped
     cap_add:
       - NET_ADMIN  # tcコマンド実行に必須
-    entrypoint: >
-      /bin/sh -c "
-      tc qdisc add dev eth0 root tbf rate 100mbit burst 32kbit latency 100ms && 
-      nginx -g 'daemon off;'
-      "
 
   postgres:
     image: postgres:16-alpine
@@ -160,24 +142,7 @@ services:
       echo 'MinIO initialization completed.';
       exit 0;
       "
-  simulator:
-    build:
-      context: ./simulator
-    container_name: simulator
-    depends_on:
-      frontend:
-        condition: service_started
-    environment:
-      - MAX_WORKERS=20
-      - BASE_URL=http://frontend
-    networks:
-      - internal
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: 0.5
-          memory: 128M
+
 networks:
   internal:
     driver: bridge
