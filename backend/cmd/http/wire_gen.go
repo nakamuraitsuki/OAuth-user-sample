@@ -8,6 +8,7 @@ package main
 
 import (
 	"context"
+	"example.com/m/internal/infrastructure/auth/oidc"
 	"example.com/m/internal/infrastructure/persistence/postgres"
 	"example.com/m/internal/infrastructure/persistence/postgres/outbox"
 	"example.com/m/internal/infrastructure/persistence/postgres/user"
@@ -28,6 +29,8 @@ import (
 // Injectors from wire.go:
 
 func InitializeHTTPServer() (*HTTPServerApp, error) {
+	oidcConfig := oidc.NewOIDCConfig()
+	idTokenVerifier := oidc.NewIDTokenVerifier(oidcConfig)
 	config := postgres.NewPostgresConfig()
 	db, err := postgres.NewClient(config)
 	if err != nil {
@@ -42,7 +45,7 @@ func InitializeHTTPServer() (*HTTPServerApp, error) {
 	}
 	iconStorage := s3.NewIconStorage(s3ClientSet, s3Config)
 	userUseCaseInterface := user2.NewUserUseCase(repository, iconStorage)
-	handler := user3.NewHandler(userUseCaseInterface)
+	handler := user3.NewHandler(oidcConfig, idTokenVerifier, userUseCaseInterface)
 	videoRepository := video.NewRepository(db)
 	outboxRepository := outbox.NewRepository(db)
 	storage := s3.NewVideoStorage(s3ClientSet, s3Config)
