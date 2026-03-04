@@ -1,9 +1,9 @@
 package user
 
 import (
-	"net/http"
+	"crypto/rand"
+	"encoding/base64"
 
-	"example.com/m/internal/interface/http/middleware"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
@@ -16,21 +16,20 @@ type DummyLoginResponse struct {
 	Role    string    `json:"role,omitempty"`
 }
 
-// POST /users/login
-func (h *Handler) DummyLogin(c echo.Context) error {
-	// 仮ユーザーとして UUID ゼロ値を Cookie に書き込む
-	c.SetCookie(&http.Cookie{
-		Name:     middleware.DummyLoginCookieName,
-		Value:    uuid.Nil.String(),
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   false, // 開発環境では false、本番では true
-	})
+func (h *Handler) Login(c echo.Context) error {
+	ctx := c.Request().Context()
 
-	return c.JSON(http.StatusOK, DummyLoginResponse{
-		ID:   uuid.Nil,
-		Name: "Dummy User",
-		Bio:  "This is a dummy user for development purposes.",
-		Role: "user",
-	})
+	state, _ := h.generateRandomString(32)
+	nonce, _ := h.generateRandomString(32)
+
+	
+}
+
+// state や nonce 等を作るためのヘルパ
+func (h *Handler) generateRandomString(n int) (string, error) {
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return base64.URLEncoding.EncodeToString(b), nil
 }
