@@ -19,6 +19,7 @@ import (
 	user_uc "example.com/m/internal/usecase/user"
 	"example.com/m/internal/usecase/video/manage"
 	"example.com/m/internal/usecase/video/view"
+	"example.com/m/internal/infrastructure/auth/oidc"
 	"github.com/google/wire"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -39,6 +40,7 @@ func InitializeHTTPServer() (*HTTPServerApp, error) {
 		// Configs
 		postgres.NewPostgresConfig,
 		s3.NewS3Config,
+		oidc.NewOIDCConfig,
 
 		// Infra Clients
 		postgres.NewClient,
@@ -59,6 +61,9 @@ func InitializeHTTPServer() (*HTTPServerApp, error) {
 		user_uc.NewUserUseCase,
 		manage.NewVideoManagementUseCase,
 		view.NewVideoViewingUseCase,
+
+		// OIDC
+		oidc.NewIDTokenVerifier,
 
 		// HTTP Handlers
 		user_h.NewHandler,
